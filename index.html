@@ -208,6 +208,24 @@
             </label>
             <input type="text" id="projectName" class="w-full mt-1 px-3 py-1.5 border border-indigo-300 bg-indigo-50/30 rounded-md text-xs font-semibold text-indigo-950 focus:ring-2 focus:ring-indigo-500" value="RO Zero Live Campaign Q4 / Influencer Promotion" placeholder="เช่น Ragnarok Origin Live Stream / Content Creator Campaign">
           </div>
+          
+          <!-- Working Period Fields -->
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+            <label class="font-semibold text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> ระยะเวลาการทำงาน (Working Period) :
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="text-[11px] text-slate-500 block mb-0.5">วันที่เริ่มงาน (Start Date)</span>
+                <input type="date" id="workStartDate" class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <span class="text-[11px] text-slate-500 block mb-0.5">ทำงานถึงวันที่ (End Date)</span>
+                <input type="date" id="workEndDate" class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="font-semibold text-slate-600">ประเภทเอกสาร (ล็อค)</label>
@@ -314,12 +332,19 @@
 
           <!-- Project & Customer Grid -->
           <div class="my-2 space-y-1.5">
-            <!-- Project / Campaign Bar -->
-            <div class="p-1.5 bg-indigo-50/70 border border-indigo-200 rounded flex items-center gap-2 text-[10px]">
-              <span class="font-bold text-indigo-900 flex-shrink-0 flex items-center gap-1 font-heading">
-                <i class="fa-solid fa-bullhorn text-indigo-600"></i> Project / โครงการ:
-              </span>
-              <span id="prevProjectName" class="font-semibold text-slate-800 truncate"></span>
+            <!-- Project / Campaign Bar with Working Period -->
+            <div class="p-1.5 bg-indigo-50/70 border border-indigo-200 rounded text-[10px] space-y-0.5">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-indigo-950 flex-shrink-0 flex items-center gap-1 font-heading">
+                  <i class="fa-solid fa-bullhorn text-indigo-600"></i> Project / โครงการ:
+                </span>
+                <span id="prevProjectName" class="font-semibold text-slate-800 truncate"></span>
+              </div>
+              <div id="prevWorkPeriodContainer" class="flex items-center gap-1.5 text-slate-600 text-[9.5px] pl-4">
+                <i class="fa-solid fa-calendar-check text-indigo-600 text-[9px]"></i>
+                <span class="font-medium text-slate-500">ระยะเวลาการทำงาน:</span>
+                <span id="prevWorkPeriod" class="font-semibold text-indigo-950 font-mono"></span>
+              </div>
             </div>
 
             <!-- Customer Info (LOCKED GRAVITY GAME TECH) -->
@@ -459,6 +484,12 @@
     const todayIso = today.toISOString().split('T')[0];
     document.getElementById('invoiceDate').value = todayIso;
     document.getElementById('invoiceNumber').value = generateInvoiceNumber(todayIso);
+
+    // Default working period dates (current month)
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+    document.getElementById('workStartDate').value = firstDayOfMonth;
+    document.getElementById('workEndDate').value = lastDayOfMonth;
 
     // Auto set Due Date = +30 days
     function calculateDueDate(isoDateStr) {
@@ -619,8 +650,22 @@
       const taxId = document.getElementById('issuerTaxId').value;
       document.getElementById('prevIssuerTaxId').innerText = taxId ? `TAX ID: ${taxId}` : "TAX ID: -";
 
-      // Project info
+      // Project info & Working period
       document.getElementById('prevProjectName').innerText = document.getElementById('projectName').value || "-";
+
+      const startD = document.getElementById('workStartDate').value;
+      const endD = document.getElementById('workEndDate').value;
+      const periodElem = document.getElementById('prevWorkPeriod');
+      const periodContainer = document.getElementById('prevWorkPeriodContainer');
+
+      if (startD || endD) {
+        periodContainer.classList.remove('hidden');
+        const formattedStart = startD ? formatDate(startD) : "ไม่ระบุ";
+        const formattedEnd = endD ? formatDate(endD) : "ไม่ระบุ";
+        periodElem.innerText = `${formattedStart} ถึง ${formattedEnd}`;
+      } else {
+        periodContainer.classList.add('hidden');
+      }
 
       // Payment Details: Bank, Account Name, Account No., Branch
       document.getElementById('prevPayBank').innerText = document.getElementById('payBank').value || "-";
@@ -746,7 +791,8 @@
 
     const inputs = [
       'issuerName', 'issuerAddress', 'issuerPhone', 'issuerEmail', 'issuerTaxId', 
-      'projectName', 'payBank', 'payAccName', 'payAccNo', 'payBranch',
+      'projectName', 'workStartDate', 'workEndDate',
+      'payBank', 'payAccName', 'payAccNo', 'payBranch',
       'invoiceNumber', 'discountInput', 'vatOption', 'whtOption'
     ];
     inputs.forEach(id => {
