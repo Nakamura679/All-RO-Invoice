@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบออกใบแจ้งหนี้ / ใบกำกับภาษี</title>
+  <title>ระบบออกใบแจ้งหนี้อัตโนมัติ (Invoice)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
       width: 210mm;
       height: 296mm;
       max-height: 296mm;
-      padding: 14mm 16mm 12mm 16mm;
+      padding: 12mm 15mm 10mm 15mm;
       margin: 0 auto;
       background: white;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -34,7 +34,7 @@
       overflow: hidden;
     }
 
-    /* Print Specific Styles - Fix exactly 1 Page */
+    /* Print Specific Styles - Fix strictly 1 Page */
     @media print {
       @page {
         size: A4 portrait;
@@ -79,14 +79,13 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
-  <!-- Header Bar -->
   <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
         <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400"></i>
         <div>
-          <h1 class="text-lg font-bold">ระบบออกใบแจ้งหนี้อัตโนมัติ</h1>
-          <p class="text-xs text-indigo-200">สร้างและส่งออกไฟล์ PDF หน้าเดียวจบ (Single Page A4)</p>
+          <h1 class="text-lg font-bold">ระบบออกใบแจ้งหนี้อัตโนมัติ (Invoice Generator)</h1>
+          <p class="text-xs text-indigo-200">พิมพ์หรือบันทึก PDF ขนาดมาตรฐาน A4 ใน 1 หน้าพอดี</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -99,87 +98,109 @@
 
   <div class="main-container max-w-7xl mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT PANEL: Editor Inputs (No-Print) -->
-    <div class="lg:col-span-5 space-y-5 no-print">
+    <div class="lg:col-span-5 space-y-4 no-print">
       
       <!-- Issuer Profile -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2.5">
         <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading border-b pb-2">
-          <i class="fa-solid fa-building text-indigo-600"></i> ข้อมูลผู้ออกเอกสาร (ผู้ขาย/ผู้ให้บริการ)
+          <i class="fa-solid fa-building text-indigo-600"></i> ข้อมูลผู้ออกเอกสาร (ผู้ให้บริการ)
         </h2>
-        <div class="space-y-2">
+        <div class="space-y-2 text-xs">
           <div>
-            <label class="text-xs font-semibold text-slate-600">ชื่อร้านค้า / บริษัท / ชื่อคุณ</label>
-            <input type="text" id="issuerName" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" value="นายเกษมสุข กลิ่นจันทร์">
+            <label class="font-semibold text-slate-600">ชื่อร้านค้า / บริษัท / ชื่อคุณ</label>
+            <input type="text" id="issuerName" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none" value="บจก. ดิจิทัล สมาร์ท โซลูชั่น">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-600">ที่อยู่</label>
-            <textarea id="issuerAddress" rows="2" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">กรุงเทพมหานคร ประเทศไทย</textarea>
+            <label class="font-semibold text-slate-600">ที่อยู่</label>
+            <textarea id="issuerAddress" rows="2" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none">กรุงเทพมหานคร ประเทศไทย</textarea>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์</label>
-              <input type="text" id="issuerPhone" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md text-xs" value="08X-XXX-XXXX">
+              <label class="font-semibold text-slate-600">เบอร์โทรศัพท์</label>
+              <input type="text" id="issuerPhone" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md" value="08X-XXX-XXXX">
             </div>
             <div>
-              <label class="text-xs font-semibold text-slate-600">TAX ID (ถ้ามี)</label>
-              <input type="text" id="issuerTaxId" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md text-xs" placeholder="เลขประจำตัวผู้เสียภาษี">
+              <label class="font-semibold text-slate-600">TAX ID (ผู้ออก)</label>
+              <input type="text" id="issuerTaxId" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md" value="0105563089123">
             </div>
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-600">โลโก้ (ไฟล์รูปภาพ)</label>
-            <input type="file" id="logoInput" accept="image/*" class="w-full mt-1 text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            <label class="font-semibold text-slate-600">โลโก้ (ไฟล์รูปภาพ)</label>
+            <input type="file" id="logoInput" accept="image/*" class="w-full mt-1 text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
           </div>
         </div>
       </div>
 
       <!-- Locked Client Profile -->
-      <div class="bg-amber-50/70 rounded-xl shadow-sm border border-amber-300 p-4 space-y-2">
+      <div class="bg-amber-50/70 rounded-xl shadow-sm border border-amber-300 p-3.5 space-y-2">
         <div class="flex items-center justify-between border-b border-amber-200 pb-1.5">
-          <h2 class="text-sm font-bold text-amber-900 flex items-center gap-1.5 font-heading">
-            <i class="fa-solid fa-lock text-amber-600"></i> ข้อมูลลูกค้า (ล็อคข้อมูลถาวร)
+          <h2 class="text-xs font-bold text-amber-900 flex items-center gap-1.5 font-heading">
+            <i class="fa-solid fa-lock text-amber-600"></i> ข้อมูลลูกค้า (ล็อคถาวร)
           </h2>
-          <span class="text-[11px] font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">แก้ไขไม่ได้</span>
+          <span class="text-[10px] font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">แก้ไขไม่ได้</span>
         </div>
-        <div class="text-xs text-slate-700 space-y-1 bg-white p-2.5 rounded-lg border border-amber-200">
+        <div class="text-xs text-slate-700 space-y-0.5 bg-white p-2.5 rounded-lg border border-amber-200">
           <p class="font-bold text-slate-900">Gravity Game Tech Co., Ltd. (Head Office)</p>
-          <p class="text-[11px] text-slate-600"><span class="font-semibold text-slate-500">ที่อยู่:</span> 159/13 ถนนสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพมหานคร 10110</p>
-          <p class="text-[11px] text-slate-600"><span class="font-semibold text-slate-500">โทรศัพท์:</span> 02-126-7966 | <span class="font-semibold text-slate-500">TAX ID:</span> 0105562018721</p>
+          <p class="text-[11px] text-slate-600">159/13 ถนนสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพมหานคร 10110</p>
+          <p class="text-[11px] text-slate-600">โทรศัพท์: 02-126-7966 | TAX ID: 0105562018721</p>
         </div>
       </div>
 
-      <!-- Document Metadata -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2.5">
+        <div class="flex items-center justify-between border-b pb-2">
+          <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading">
+            <i class="fa-solid fa-building-columns text-emerald-600"></i> ข้อมูลการชำระเงิน (Payment Details)
+          </h2>
+          <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">กรอกเองได้</span>
+        </div>
+        <div class="space-y-2 text-xs">
+          <div>
+            <label class="font-semibold text-slate-600">Bank :</label>
+            <input type="text" id="payBank" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none" value="ธนาคารกสิกรไทย (KBANK)">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-600">Account Name :</label>
+            <input type="text" id="payAccName" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none" value="บจก. ดิจิทัล สมาร์ท โซลูชั่น">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-semibold text-slate-600">Account No. :</label>
+              <input type="text" id="payAccNo" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none" value="098-7-65432-1">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-600">Branch :</label>
+              <input type="text" id="payBranch" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none" value="อโศก">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
         <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading border-b pb-2">
-          <i class="fa-solid fa-file-lines text-indigo-600"></i> รายละเอียดเอกสาร
+          <i class="fa-solid fa-calendar-days text-indigo-600"></i> วันที่และเลขที่เอกสาร
         </h2>
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2.5 text-xs">
           <div>
-            <label class="text-xs font-semibold text-slate-600">ประเภทเอกสาร</label>
-            <select id="docTypeSelect" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-              <option value="INVOICE / ใบแจ้งหนี้">ใบแจ้งหนี้ (Invoice)</option>
-              <option value="RECEIPT / ใบเสร็จรับเงิน">ใบเสร็จรับเงิน (Receipt)</option>
-              <option value="QUOTATION / ใบเสนอราคา">ใบเสนอราคา (Quotation)</option>
-              <option value="TAX INVOICE / ใบกำกับภาษี">ใบกำกับภาษี (Tax Invoice)</option>
-            </select>
+            <label class="font-semibold text-slate-600">ประเภทเอกสาร (ล็อค)</label>
+            <input type="text" readonly class="w-full mt-1 px-2.5 py-1.5 bg-slate-100 border border-slate-300 rounded-md font-bold text-indigo-950 cursor-not-allowed" value="INVOICE / ใบแจ้งหนี้">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-600">เลขที่เอกสาร</label>
-            <input type="text" id="invoiceNumber" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md text-xs font-mono" value="INV-202610-001">
+            <label class="font-semibold text-slate-600">เลขที่เอกสาร (คำนวณอัตโนมัติ)</label>
+            <input type="text" id="invoiceNumber" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md font-mono bg-slate-50 font-semibold text-slate-800">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-600">วันที่ออกเอกสาร</label>
-            <input type="date" id="invoiceDate" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md text-xs">
+            <label class="font-semibold text-slate-600">วันที่ออกเอกสาร</label>
+            <input type="date" id="invoiceDate" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-600">วันครบกำหนด</label>
-            <input type="date" id="dueDate" class="w-full mt-1 px-2.5 py-1.5 border border-slate-300 rounded-md text-xs">
+            <label class="font-semibold text-slate-600">วันครบกำหนด (+30 วัน อัตโนมัติ)</label>
+            <input type="date" id="dueDate" readonly class="w-full mt-1 px-2.5 py-1.5 bg-slate-100 border border-slate-300 rounded-md font-semibold text-indigo-950 cursor-not-allowed">
           </div>
         </div>
       </div>
 
       <!-- Line Items -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2.5">
         <div class="flex items-center justify-between border-b pb-2">
           <h2 class="text-sm font-bold text-slate-800 flex items-center gap-1.5 font-heading">
             <i class="fa-solid fa-list-check text-indigo-600"></i> รายการสินค้า / ค่าบริการ
@@ -188,14 +209,14 @@
             + เพิ่มรายการ
           </button>
         </div>
-        <div id="itemInputsContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+        <div id="itemInputsContainer" class="space-y-2 max-h-40 overflow-y-auto pr-1">
           <!-- Dynamically generated items -->
         </div>
       </div>
 
       <!-- Taxes and Discount Options -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2.5">
-        <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading border-b pb-2">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3.5 space-y-2">
+        <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5 font-heading border-b pb-1.5">
           <i class="fa-solid fa-calculator text-indigo-600"></i> ภาษี & ส่วนลด
         </h2>
         <div class="grid grid-cols-2 gap-2 text-xs">
@@ -222,24 +243,12 @@
         </div>
       </div>
 
-      <!-- Locked Payment Note -->
-      <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-3 space-y-1.5">
-        <div class="flex items-center justify-between">
-          <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <i class="fa-solid fa-lock text-slate-400"></i> หมายเหตุ (ล็อคค่าเริ่มต้น)
-          </label>
-          <span class="text-[10px] text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded">คงที่</span>
-        </div>
-        <input type="text" readonly class="w-full px-2.5 py-1 bg-slate-100 border border-slate-300 rounded text-xs text-slate-600 cursor-not-allowed font-medium" value="กำหนดชำระเงินภายใน 30 วัน ( Credit term : 30 day )">
-      </div>
-
     </div>
 
-    <!-- RIGHT PANEL: A4 Document Sheet (Strict 1 Page) -->
     <div class="preview-wrapper lg:col-span-7 flex justify-center">
       <div class="a4-sheet" id="invoiceSheet">
         
-        <!-- TOP SECTION: Header, Customer, Table, Totals -->
+        <!-- TOP SECTION -->
         <div class="flex-1 flex flex-col justify-start">
           
           <!-- Sheet Header -->
@@ -257,17 +266,18 @@
             </div>
 
             <div class="text-right">
-              <h1 id="prevDocTitle" class="text-lg font-bold tracking-tight text-indigo-950 font-heading">INVOICE</h1>
-              <div class="mt-1 space-y-0.5 text-[11px]">
+              <h1 class="text-xl font-bold tracking-tight text-indigo-950 font-heading">INVOICE</h1>
+              <p class="text-[11px] font-semibold text-slate-500">ใบแจ้งหนี้</p>
+              <div class="mt-2 space-y-0.5 text-[11px]">
                 <p><span class="text-slate-500 font-medium">เลขที่:</span> <span id="prevInvoiceNo" class="font-bold text-slate-900 font-mono"></span></p>
                 <p><span class="text-slate-500 font-medium">วันที่:</span> <span id="prevInvoiceDate" class="text-slate-800"></span></p>
-                <p><span class="text-slate-500 font-medium">ครบกำหนด:</span> <span id="prevDueDate" class="text-slate-800 font-semibold"></span></p>
+                <p><span class="text-slate-500 font-medium">ครบกำหนด:</span> <span id="prevDueDate" class="text-slate-800 font-bold text-indigo-900"></span></p>
               </div>
             </div>
           </div>
 
           <!-- Customer Info (LOCKED GRAVITY GAME TECH) -->
-          <div class="my-3 p-2.5 bg-slate-50 rounded border border-slate-200 text-[11px]">
+          <div class="my-2.5 p-2 bg-slate-50 rounded border border-slate-200 text-[11px]">
             <span class="font-bold text-slate-400 uppercase tracking-wider block text-[9px] mb-0.5">ลูกค้า / Bill To:</span>
             <div class="font-bold text-slate-900 text-xs">Gravity Game Tech Co., Ltd. (Head Office)</div>
             <div class="text-slate-700 leading-snug">
@@ -283,11 +293,11 @@
           <table class="w-full text-[11px] text-left border-collapse my-2">
             <thead>
               <tr class="bg-indigo-900 text-white font-heading">
-                <th class="py-1.5 px-2.5 rounded-l text-center w-10">ลำดับ</th>
-                <th class="py-1.5 px-2.5">รายละเอียด (Description)</th>
-                <th class="py-1.5 px-2.5 text-right w-14">จำนวน</th>
-                <th class="py-1.5 px-2.5 text-right w-24">ราคา/หน่วย</th>
-                <th class="py-1.5 px-2.5 rounded-r text-right w-24">จำนวนเงิน</th>
+                <th class="py-1.5 px-2 rounded-l text-center w-10">ลำดับ</th>
+                <th class="py-1.5 px-2">รายละเอียด (Description)</th>
+                <th class="py-1.5 px-2 text-right w-14">จำนวน</th>
+                <th class="py-1.5 px-2 text-right w-24">ราคา/หน่วย</th>
+                <th class="py-1.5 px-2 rounded-r text-right w-24">จำนวนเงิน</th>
               </tr>
             </thead>
             <tbody id="previewItemsBody" class="divide-y divide-slate-200">
@@ -295,16 +305,33 @@
             </tbody>
           </table>
 
-          <!-- Financial Totals Section -->
-          <div class="flex justify-between items-start gap-4 mt-2 pt-2 border-t border-slate-200">
-            <!-- Thai Baht Text -->
-            <div class="flex-1 bg-slate-50 p-2 rounded border border-slate-200">
-              <span class="text-[9px] font-semibold text-slate-400 block mb-0.5">จำนวนเงินตัวอักษร (Total in words)</span>
-              <p id="prevThaiBahtText" class="text-[11px] font-bold text-indigo-950 font-heading">ศูนย์บาทถ้วน</p>
+          <div class="grid grid-cols-12 gap-3 mt-1.5 pt-2 border-t border-slate-200">
+            
+            <!-- LEFT: Bank Info & Thai Baht Text -->
+            <div class="col-span-7 space-y-2">
+              <!-- Live Bank Transfer Info strictly formatted with Bank, Account Name, Account No., Branch -->
+              <div class="bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-300 text-[11px] space-y-1">
+                <div class="flex items-center gap-1.5 text-emerald-900 font-bold border-b border-emerald-200 pb-1">
+                  <i class="fa-solid fa-building-columns text-emerald-700"></i>
+                  <span>ข้อมูลการชำระเงิน (Payment Details)</span>
+                </div>
+                <div class="grid grid-cols-1 gap-y-0.5 text-slate-800">
+                  <p><span class="font-bold text-slate-700">Bank :</span> <span id="prevPayBank"></span></p>
+                  <p><span class="font-bold text-slate-700">Account Name :</span> <span id="prevPayAccName"></span></p>
+                  <p><span class="font-bold text-slate-700">Account No. :</span> <span id="prevPayAccNo" class="font-bold text-slate-900 font-mono text-xs"></span></p>
+                  <p><span class="font-bold text-slate-700">Branch :</span> <span id="prevPayBranch"></span></p>
+                </div>
+              </div>
+
+              <!-- Thai Baht Text -->
+              <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                <span class="text-[9px] font-semibold text-slate-400 block mb-0.5">จำนวนเงินตัวอักษร (Total in words)</span>
+                <p id="prevThaiBahtText" class="text-[11px] font-bold text-indigo-950 font-heading">ศูนย์บาทถ้วน</p>
+              </div>
             </div>
 
-            <!-- Calculation Box -->
-            <div class="w-60 space-y-1 text-[11px]">
+            <!-- RIGHT: Calculation Box -->
+            <div class="col-span-5 space-y-1 text-[11px]">
               <div class="flex justify-between text-slate-600">
                 <span>รวมเป็นเงิน (Subtotal):</span>
                 <span id="prevSubtotal" class="font-mono">0.00</span>
@@ -327,29 +354,28 @@
               </div>
               <div id="rowNetPayable" class="flex justify-between text-[11px] font-bold text-indigo-950 pt-0.5 hidden">
                 <span>ยอดชำระสุทธิ (Net Payable):</span>
-                <span id="prevNetPayable" class="font-mono text-emerald-600">0.00</span>
+                <span id="prevNetPayable" class="font-mono text-emerald-700">0.00</span>
               </div>
             </div>
           </div>
 
           <!-- Locked Terms & Note -->
-          <div class="mt-3 p-2 bg-slate-50 rounded border-l-4 border-indigo-600 text-[11px]">
+          <div class="mt-2.5 p-2 bg-slate-50 rounded border-l-4 border-indigo-600 text-[11px]">
             <span class="font-bold text-slate-800">หมายเหตุ / Note:</span>
             <p class="text-slate-700 font-medium">กำหนดชำระเงินภายใน 30 วัน ( Credit term : 30 day )</p>
           </div>
 
         </div>
 
-        <!-- BOTTOM SECTION: Signature Section -->
-        <div class="grid grid-cols-2 gap-8 text-center text-[11px] pt-4 border-t border-slate-200 mt-2">
+        <div class="grid grid-cols-2 gap-8 text-center text-[11px] pt-3 border-t border-slate-200 mt-2">
           <div>
-            <div class="h-10 border-b border-dashed border-slate-400 mx-auto w-36"></div>
-            <p class="mt-1.5 font-medium text-slate-700">ผู้รับวางบิล / ผู้รับบริการ</p>
+            <div class="h-9 border-b border-dashed border-slate-400 mx-auto w-36"></div>
+            <p class="mt-1 font-medium text-slate-700">ผู้รับวางบิล / ลูกค้า</p>
             <p class="text-[9px] text-slate-400">วันที่: ..... / ..... / .........</p>
           </div>
           <div>
-            <div class="h-10 border-b border-dashed border-slate-400 mx-auto w-36"></div>
-            <p class="mt-1.5 font-medium text-slate-700">ผู้ออกเอกสาร / ผู้ให้บริการ</p>
+            <div class="h-9 border-b border-dashed border-slate-400 mx-auto w-36"></div>
+            <p class="mt-1 font-medium text-slate-700">ผู้ออกเอกสาร / ผู้ให้บริการ</p>
             <p class="text-[9px] text-slate-400">วันที่: ..... / ..... / .........</p>
           </div>
         </div>
@@ -365,25 +391,47 @@
       { desc: "ค่าบริการจัดการแคมเปญการตลาดและประสานงาน Influencer", qty: 1, price: 35000 }
     ];
 
-    // Initialize Default Dates
+    // Helper: Generate Invoice Number from date (INV-YYYYMMDD-001)
+    function generateInvoiceNumber(dateStr) {
+      if (!dateStr) return "INV-001";
+      const cleanDate = dateStr.replace(/-/g, '');
+      return `INV-${cleanDate}-001`;
+    }
+
+    // Initialize Default Dates (Today & +30 Days)
     const today = new Date();
-    const dueDate = new Date();
-    dueDate.setDate(today.getDate() + 30); // 30-day credit term
+    const todayIso = today.toISOString().split('T')[0];
+    document.getElementById('invoiceDate').value = todayIso;
+    document.getElementById('invoiceNumber').value = generateInvoiceNumber(todayIso);
 
-    document.getElementById('invoiceDate').value = today.toISOString().split('T')[0];
-    document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+    // Auto set Due Date = +30 days
+    function calculateDueDate(isoDateStr) {
+      if (!isoDateStr) return "";
+      const d = new Date(isoDateStr);
+      d.setDate(d.getDate() + 30);
+      return d.toISOString().split('T')[0];
+    }
+    document.getElementById('dueDate').value = calculateDueDate(todayIso);
 
-    // Add new row input
+    // When Invoice Date changes, recalculate Due Date & Invoice Number
+    document.getElementById('invoiceDate').addEventListener('change', function(e) {
+      const selectedDate = e.target.value;
+      if (selectedDate) {
+        document.getElementById('dueDate').value = calculateDueDate(selectedDate);
+        document.getElementById('invoiceNumber').value = generateInvoiceNumber(selectedDate);
+        updateInvoicePreview();
+      }
+    });
+
     function addItem() {
-      if (items.length >= 8) {
-        alert("เพื่อให้อยู่ในหน้า A4 เดียวพอดี แนะนำไม่เกิน 8 รายการครับ");
+      if (items.length >= 7) {
+        alert("เพื่อให้อยู่ในหน้า A4 1 หน้าพอดี แนะนำไม่เกิน 6-7 รายการครับ");
       }
       items.push({ desc: "", qty: 1, price: 0 });
       renderInputItems();
       updateInvoicePreview();
     }
 
-    // Remove row input
     function removeItem(index) {
       if (items.length > 1) {
         items.splice(index, 1);
@@ -392,7 +440,6 @@
       }
     }
 
-    // Render left panel items input
     function renderInputItems() {
       const container = document.getElementById('itemInputsContainer');
       container.innerHTML = "";
@@ -434,7 +481,6 @@
       updateInvoicePreview();
     }
 
-    // Thai Baht Text conversion
     function thaiBahtText(num) {
       if (isNaN(num)) return "ศูนย์บาทถ้วน";
       const digits = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
@@ -513,8 +559,13 @@
       const taxId = document.getElementById('issuerTaxId').value;
       document.getElementById('prevIssuerTaxId').innerText = taxId ? `TAX ID: ${taxId}` : "";
 
+      // Payment Details: Bank, Account Name, Account No., Branch
+      document.getElementById('prevPayBank').innerText = document.getElementById('payBank').value || "-";
+      document.getElementById('prevPayAccName').innerText = document.getElementById('payAccName').value || "-";
+      document.getElementById('prevPayAccNo').innerText = document.getElementById('payAccNo').value || "-";
+      document.getElementById('prevPayBranch').innerText = document.getElementById('payBranch').value || "-";
+
       // Meta info
-      document.getElementById('prevDocTitle').innerText = document.getElementById('docTypeSelect').value;
       document.getElementById('prevInvoiceNo').innerText = document.getElementById('invoiceNumber').value || "-";
       document.getElementById('prevInvoiceDate').innerText = formatDate(document.getElementById('invoiceDate').value);
       document.getElementById('prevDueDate').innerText = formatDate(document.getElementById('dueDate').value);
@@ -531,11 +582,11 @@
         const tr = document.createElement('tr');
         tr.className = index % 2 === 0 ? "bg-white" : "bg-slate-50/50";
         tr.innerHTML = `
-          <td class="py-1.5 px-2.5 text-center text-slate-500 font-mono">${index + 1}</td>
-          <td class="py-1.5 px-2.5 font-medium text-slate-800">${item.desc || '<span class="text-slate-300 italic">ไม่ได้ระบุรายละเอียด</span>'}</td>
-          <td class="py-1.5 px-2.5 text-right font-mono">${item.qty}</td>
-          <td class="py-1.5 px-2.5 text-right font-mono">${fmt(item.price)}</td>
-          <td class="py-1.5 px-2.5 text-right font-mono font-semibold text-slate-900">${fmt(lineTotal)}</td>
+          <td class="py-1.5 px-2 text-center text-slate-500 font-mono">${index + 1}</td>
+          <td class="py-1.5 px-2 font-medium text-slate-800">${item.desc || '<span class="text-slate-300 italic">ไม่ได้ระบุรายละเอียด</span>'}</td>
+          <td class="py-1.5 px-2 text-right font-mono">${item.qty}</td>
+          <td class="py-1.5 px-2 text-right font-mono">${fmt(item.price)}</td>
+          <td class="py-1.5 px-2 text-right font-mono font-semibold text-slate-900">${fmt(lineTotal)}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -613,19 +664,11 @@
       }
     });
 
-    // Auto calculate due date (+30 days)
-    document.getElementById('invoiceDate').addEventListener('change', function(e) {
-      if (e.target.value) {
-        const date = new Date(e.target.value);
-        date.setDate(date.getDate() + 30);
-        document.getElementById('dueDate').value = date.toISOString().split('T')[0];
-        updateInvoicePreview();
-      }
-    });
-
-    // Event listeners
-    const inputs = ['issuerName', 'issuerAddress', 'issuerPhone', 'issuerTaxId', 
-                    'docTypeSelect', 'invoiceNumber', 'dueDate', 'discountInput', 'vatOption', 'whtOption'];
+    const inputs = [
+      'issuerName', 'issuerAddress', 'issuerPhone', 'issuerTaxId', 
+      'payBank', 'payAccName', 'payAccNo', 'payBranch',
+      'invoiceNumber', 'discountInput', 'vatOption', 'whtOption'
+    ];
     inputs.forEach(id => {
       document.getElementById(id).addEventListener('input', updateInvoicePreview);
       document.getElementById(id).addEventListener('change', updateInvoicePreview);
