@@ -410,32 +410,26 @@
 
           <div class="grid grid-cols-12 gap-2 mt-1 pt-1.5 border-t border-slate-200">
             
-            <!-- LEFT: Bank Info & Thai Baht Text -->
-            <div class="col-span-7 space-y-1.5">
+            <!-- LEFT: Bank Info (Total in words removed) -->
+            <div class="col-span-7">
               <!-- Live Bank Transfer Info strictly formatted with Bank, Account Name, Account No., Branch -->
-              <div class="bg-emerald-50/70 p-2 rounded-lg border border-emerald-300 text-[10px] space-y-0.5">
-                <div class="flex items-center justify-between border-b border-emerald-200 pb-0.5">
-                  <div class="flex items-center gap-1 text-emerald-900 font-bold">
+              <div class="bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-300 text-[10.5px] space-y-1 h-full flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5 text-emerald-900 font-bold border-b border-emerald-200 pb-1">
                     <i class="fa-solid fa-building-columns text-emerald-700"></i>
                     <span>ข้อมูลการชำระเงิน (Payment Details)</span>
                   </div>
-                </div>
-                <div class="grid grid-cols-1 gap-y-0.5 text-slate-800 pt-0.5">
-                  <p><span class="font-bold text-slate-700">Bank :</span> <span id="prevPayBank"></span></p>
-                  <p><span class="font-bold text-slate-700">Account Name :</span> <span id="prevPayAccName"></span></p>
-                  <p><span class="font-bold text-slate-700">Account No. :</span> <span id="prevPayAccNo" class="font-bold text-slate-900 font-mono"></span></p>
-                  <p><span class="font-bold text-slate-700">Branch :</span> <span id="prevPayBranch"></span></p>
+                  <div class="grid grid-cols-1 gap-y-0.5 text-slate-800 pt-1">
+                    <p><span class="font-bold text-slate-700">Bank :</span> <span id="prevPayBank"></span></p>
+                    <p><span class="font-bold text-slate-700">Account Name :</span> <span id="prevPayAccName"></span></p>
+                    <p><span class="font-bold text-slate-700">Account No. :</span> <span id="prevPayAccNo" class="font-bold text-slate-900 font-mono text-[11px]"></span></p>
+                    <p><span class="font-bold text-slate-700">Branch :</span> <span id="prevPayBranch"></span></p>
+                  </div>
                 </div>
                 <!-- Red notice under payment details -->
-                <p class="text-[9px] text-red-600 font-semibold pt-0.5 border-t border-emerald-200 mt-0.5 leading-tight">
+                <p class="text-[9px] text-red-600 font-semibold pt-1 border-t border-emerald-200 leading-tight">
                   * ผู้รับเงินต้องตรงกับสัญญาเท่านั้น ถ้าต้องการเปลี่ยนต้องติดต่อก่อน 30 วันล่วงหน้า
                 </p>
-              </div>
-
-              <!-- Thai Baht Text -->
-              <div class="bg-slate-50 p-1.5 rounded border border-slate-200">
-                <span class="text-[8.5px] font-semibold text-slate-400 block leading-tight">จำนวนเงินตัวอักษร (Total in words)</span>
-                <p id="prevThaiBahtText" class="text-[10px] font-bold text-indigo-950 font-heading leading-tight">ศูนย์บาทถ้วน</p>
               </div>
             </div>
 
@@ -794,11 +788,9 @@
         document.getElementById('labelWht').innerText = `หัก ณ ที่จ่าย ${whtPercent}%:`;
         document.getElementById('prevWht').innerText = `-${fmt(whtAmount)}`;
         document.getElementById('prevNetPayable').innerText = fmt(netPayable);
-        document.getElementById('prevThaiBahtText').innerText = thaiBahtText(netPayable);
       } else {
         rowWht.classList.add('hidden');
         rowNetPayable.classList.add('hidden');
-        document.getElementById('prevThaiBahtText').innerText = thaiBahtText(grandTotal);
       }
     }
 
