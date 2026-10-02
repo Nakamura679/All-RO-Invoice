@@ -79,14 +79,13 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
-  <!-- Header Bar -->
   <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
         <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400"></i>
         <div>
           <h1 class="text-lg font-bold">ระบบออกใบแจ้งหนี้อัตโนมัติ (Invoice Generator)</h1>
-          <p class="text-xs text-indigo-200">พิมพ์หรือบันทึก PDF ขนาดมาตรฐาน A4 ใน 1 หน้าพอดี</p>
+          <p class="text-xs text-indigo-200">สร้างใบแจ้งหนี้สำหรับ Gravity Game Tech มาตรฐาน 1 หน้า A4</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -99,7 +98,6 @@
 
   <div class="main-container max-w-7xl mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT PANEL: Editor Inputs (No-Print) -->
     <div class="lg:col-span-5 space-y-4 no-print">
       
       <!-- Issuer Profile with Signature Upload -->
@@ -211,17 +209,31 @@
         </div>
       </div>
 
-      <!-- Document Metadata with Project / Campaign field -->
+      <!-- Document Metadata with Game Selector & Working Period -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
         <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading border-b pb-2">
-          <i class="fa-solid fa-calendar-days text-indigo-600"></i> รายละเอียดเอกสาร & โปรเจ็ค
+          <i class="fa-solid fa-gamepad text-indigo-600"></i> ข้อมูลโปรเจ็ค & วันที่
         </h2>
         <div class="space-y-2 text-xs">
+          
+          <!-- Game Selection Dropdown -->
           <div>
             <label class="font-bold text-indigo-950 flex items-center gap-1">
-              <i class="fa-solid fa-bullhorn text-indigo-600"></i> Project / หัวข้อโปรเจ็ค :
+              <i class="fa-solid fa-dice-d20 text-indigo-600"></i> เลือกเกม (Game Project) : *
             </label>
-            <input type="text" id="projectName" class="w-full mt-1 px-3 py-1.5 border border-indigo-300 bg-indigo-50/30 rounded-md text-xs font-semibold text-indigo-950 focus:ring-2 focus:ring-indigo-500" value="RO Zero Live Campaign Q4 / Influencer Promotion" placeholder="เช่น Ragnarok Origin Live Stream / Content Creator Campaign">
+            <select id="gameSelect" class="w-full mt-1 px-3 py-1.5 border border-indigo-400 bg-indigo-50/50 rounded-md text-xs font-bold text-indigo-950 focus:ring-2 focus:ring-indigo-500">
+              <option value="Ragnarok Online (Class4)">Ragnarok Online (Class4)</option>
+              <option value="Ragnarok Classic">Ragnarok Classic</option>
+              <option value="Ragnarok Landverse">Ragnarok Landverse</option>
+            </select>
+          </div>
+
+          <!-- Campaign / Project Detail Field -->
+          <div>
+            <label class="font-semibold text-slate-700 flex items-center gap-1">
+              <i class="fa-solid fa-bullhorn text-indigo-500"></i> รายละเอียดแคมเปญ / ชื่องานเพิ่มเติม :
+            </label>
+            <input type="text" id="projectDetail" class="w-full mt-1 px-3 py-1.5 border border-slate-300 rounded-md text-xs font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500" value="Influencer Live Stream Promotion & Content Production" placeholder="เช่น Live Stream ประจำสัปดาห์ / Content Review">
           </div>
           
           <!-- Working Period Fields -->
@@ -347,13 +359,15 @@
 
           <!-- Project & Customer Grid -->
           <div class="my-2 space-y-1.5">
-            <!-- Project / Campaign Bar with Working Period -->
+            
+            <!-- Project / Game Project Bar with Working Period -->
             <div class="p-1.5 bg-indigo-50/70 border border-indigo-200 rounded text-[10px] space-y-0.5">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-indigo-950 flex-shrink-0 flex items-center gap-1 font-heading">
-                  <i class="fa-solid fa-bullhorn text-indigo-600"></i> Project / โครงการ:
+                  <i class="fa-solid fa-gamepad text-indigo-600"></i> Project / หัวข้อโปรเจ็ค:
                 </span>
-                <span id="prevProjectName" class="font-semibold text-slate-800 truncate"></span>
+                <span id="prevGameName" class="font-bold text-indigo-900 bg-indigo-100/80 px-1.5 py-0.5 rounded border border-indigo-300"></span>
+                <span id="prevProjectDetail" class="font-medium text-slate-700 truncate"></span>
               </div>
               <div id="prevWorkPeriodContainer" class="flex items-center gap-1.5 text-slate-600 text-[9.5px] pl-4">
                 <i class="fa-solid fa-calendar-check text-indigo-600 text-[9px]"></i>
@@ -462,9 +476,9 @@
 
         </div>
 
-        <!-- BOTTOM SECTION: Signatures with Uploaded Issuer Signature -->
+        <!-- BOTTOM SECTION: Signatures with Gravity Game Tech and Issuer Signature -->
         <div class="grid grid-cols-2 gap-8 text-center text-[10px] pt-1.5 border-t border-slate-200 mt-1">
-          <!-- Customer Signature -->
+          <!-- Customer Signature (Locked: Gravity Game Tech) -->
           <div>
             <div class="h-10 flex items-end justify-center">
               <div class="border-b border-dashed border-slate-400 w-36"></div>
@@ -679,9 +693,13 @@
       const taxId = document.getElementById('issuerTaxId').value;
       document.getElementById('prevIssuerTaxId').innerText = taxId ? `TAX ID: ${taxId}` : "TAX ID: -";
 
-      // Project info & Working period
-      document.getElementById('prevProjectName').innerText = document.getElementById('projectName').value || "-";
+      // Project info: Selected Game + Campaign details
+      const selectedGame = document.getElementById('gameSelect').value;
+      const projectDetail = document.getElementById('projectDetail').value.trim();
+      document.getElementById('prevGameName').innerText = selectedGame;
+      document.getElementById('prevProjectDetail').innerText = projectDetail ? `- ${projectDetail}` : "";
 
+      // Working Period
       const startD = document.getElementById('workStartDate').value;
       const endD = document.getElementById('workEndDate').value;
       const periodElem = document.getElementById('prevWorkPeriod');
@@ -849,9 +867,10 @@
       window.print();
     }
 
+    // Binding event listeners
     const inputs = [
       'issuerName', 'issuerAddress', 'issuerPhone', 'issuerEmail', 'issuerTaxId', 
-      'projectName', 'workStartDate', 'workEndDate',
+      'gameSelect', 'projectDetail', 'workStartDate', 'workEndDate',
       'payBank', 'payAccName', 'payAccNo', 'payBranch',
       'invoiceNumber', 'discountInput', 'vatOption', 'whtOption'
     ];
