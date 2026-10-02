@@ -79,6 +79,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
+  <!-- Header Bar -->
   <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50 no-print">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
@@ -101,7 +102,7 @@
     <!-- LEFT PANEL: Editor Inputs (No-Print) -->
     <div class="lg:col-span-5 space-y-4 no-print">
       
-      <!-- Issuer Profile (With Tax ID *, Email *, Red Note under Address) -->
+      <!-- Issuer Profile with Signature Upload -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2.5">
         <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 font-heading border-b pb-2">
           <i class="fa-solid fa-building text-indigo-600"></i> ข้อมูลผู้ออกเอกสาร (ผู้ให้บริการ)
@@ -140,9 +141,23 @@
             <input type="text" id="issuerTaxId" maxlength="13" class="w-full mt-1 px-3 py-1.5 border border-amber-400 bg-amber-50/30 rounded-md font-mono focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-900" value="1100500123456" placeholder="กรอกเลขประจำตัว 13 หลัก">
           </div>
 
-          <div>
-            <label class="font-semibold text-slate-600">โลโก้ (ไฟล์รูปภาพ)</label>
-            <input type="file" id="logoInput" accept="image/*" class="w-full mt-1 text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+            <div>
+              <label class="font-semibold text-slate-600">โลโก้ (Logo)</label>
+              <input type="file" id="logoInput" accept="image/*" class="w-full mt-1 text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 text-[11px]">
+            </div>
+            <div>
+              <div class="flex justify-between items-center">
+                <label class="font-semibold text-slate-700 flex items-center gap-1">
+                  <i class="fa-solid fa-signature text-indigo-600"></i> ลายเซ็นผู้ออกเอกสาร
+                </label>
+                <button type="button" id="btnRemoveSignature" onclick="removeSignature()" class="text-[10px] text-red-500 hover:text-red-700 hidden">
+                  <i class="fa-solid fa-trash-can"></i> ลบ
+                </button>
+              </div>
+              <input type="file" id="signatureInput" accept="image/*" class="w-full mt-1 text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 text-[11px]">
+              <span class="text-[10px] text-slate-400 block mt-0.5">แนะนำ: PNG พื้นหลังโปร่งใส</span>
+            </div>
           </div>
         </div>
       </div>
@@ -447,15 +462,23 @@
 
         </div>
 
-        <!-- BOTTOM SECTION: Signatures -->
-        <div class="grid grid-cols-2 gap-8 text-center text-[10px] pt-2 border-t border-slate-200 mt-1">
+        <!-- BOTTOM SECTION: Signatures with Uploaded Issuer Signature -->
+        <div class="grid grid-cols-2 gap-8 text-center text-[10px] pt-1.5 border-t border-slate-200 mt-1">
+          <!-- Customer Signature -->
           <div>
-            <div class="h-8 border-b border-dashed border-slate-400 mx-auto w-32"></div>
+            <div class="h-10 flex items-end justify-center">
+              <div class="border-b border-dashed border-slate-400 w-36"></div>
+            </div>
             <p class="mt-1 font-medium text-slate-700">ผู้รับวางบิล / ลูกค้า</p>
             <p class="text-[8.5px] text-slate-400">วันที่: ..... / ..... / .........</p>
           </div>
+
+          <!-- Issuer Signature with Uploaded Graphic -->
           <div>
-            <div class="h-8 border-b border-dashed border-slate-400 mx-auto w-32"></div>
+            <div class="h-10 flex flex-col items-center justify-end relative">
+              <img id="previewSignature" class="max-h-9 max-w-[120px] object-contain mb-0.5 hidden" alt="Signature">
+              <div class="border-b border-dashed border-slate-400 w-36"></div>
+            </div>
             <p class="mt-1 font-medium text-slate-700">ผู้ออกเอกสาร / ผู้ให้บริการ</p>
             <p class="text-[8.5px] text-slate-400">วันที่: ..... / ..... / .........</p>
           </div>
@@ -603,12 +626,18 @@
       if (bahtInt === 0) {
         result = "ศูนย์บาท";
       } else {
-        let groupParts = [];
         let remain = bahtStr;
         while (remain.length > 0) {
           const cut = remain.length > 6 ? remain.length - 6 : 0;
           groupParts.unshift(remain.slice(cut));
           remain = remain.slice(0, cut);
+        }
+        let groupParts = [];
+        let r = bahtStr;
+        while (r.length > 0) {
+          const cut = r.length > 6 ? r.length - 6 : 0;
+          groupParts.unshift(r.slice(cut));
+          r = r.slice(0, cut);
         }
         groupParts.forEach((grp, idx) => {
           result += readGroup(grp);
@@ -771,6 +800,37 @@
         preview.classList.add('hidden');
       }
     });
+
+    // Issuer signature image preview
+    document.getElementById('signatureInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const preview = document.getElementById('previewSignature');
+      const removeBtn = document.getElementById('btnRemoveSignature');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          preview.src = event.target.result;
+          preview.classList.remove('hidden');
+          removeBtn.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "";
+        preview.classList.add('hidden');
+        removeBtn.classList.add('hidden');
+      }
+    });
+
+    // Remove signature function
+    function removeSignature() {
+      const input = document.getElementById('signatureInput');
+      const preview = document.getElementById('previewSignature');
+      const removeBtn = document.getElementById('btnRemoveSignature');
+      input.value = "";
+      preview.src = "";
+      preview.classList.add('hidden');
+      removeBtn.classList.add('hidden');
+    }
 
     // Validation before printing
     function handlePrint() {
